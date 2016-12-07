@@ -9,13 +9,14 @@
 <script>
 async_test(t => {
   // Request fullscreen on both elements, but in reverse tree order.
-  const targets = [document.getElementById('b'), document.getElementById('a')];
+  const a = document.getElementById('a');
+  const b = document.getElementById('b');
 
   // Expect two fullscreenchange events, with document.fullscreenElement
   // changing in the same order as the requests.
   const order = [];
   document.onfullscreenchange = t.step_func(() => {
-    assert_in_array(document.fullscreenElement, targets);
+    assert_in_array(document.fullscreenElement, [a, b]);
     order.push(document.fullscreenElement.id);
     if (order.length == 2) {
       assert_array_equals(order, ['b', 'a'],
@@ -26,8 +27,8 @@ async_test(t => {
   document.onfullscreenerror = t.unreached_func('fullscreenerror event');
 
   trusted_click(t.step_func(() => {
-    targets[1].requestFullscreen();
-    targets[0].requestFullscreen();
+    b.requestFullscreen();
+    a.requestFullscreen();
   }), document.body);
 });
 </script>
