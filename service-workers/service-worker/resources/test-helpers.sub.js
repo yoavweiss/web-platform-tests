@@ -1,3 +1,4 @@
+// Remove this comment
 // Adapter for testharness.js-style tests with Service Workers
 
 function service_worker_unregister_and_register(test, url, scope) {
