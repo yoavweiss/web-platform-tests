@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<script src="/resources/testharness.js"></script>
+<script src="/resources/testharnessreport.js"></script>
+<script>
+    var t = async_test("Makes sure that resources observed by `performance.getEntriesByName()`");
+    function getAbsoluteURL(url) {
+        return new URL(url, location.href).href;
+    }
+
+    function verifyGetEntriesByName(url) {
+        assert_greater_than(performance.getEntriesByName(getAbsoluteURL(url)).length, 0, url);
+    }
+</script>
+<body>
+<style>
+    #background {
+        width: 200px;
+        height: 200px;
+        background-image: url(resources/square.png?background&get-entries-by-name);
+    }
+    @font-face {
+      font-family:ahem;
+      src: url(resources/CanvasTest.ttf?get-entries-by-name);
+    }
+    span { font-family: ahem, Arial; }
+</style>
+<link rel="stylesheet" href="resources/dummy.css?get-entries-by-name">
+<script src="resources/dummy.js?get-entries-by-name"></script>
+<div id="background"></div>
+<img src="resources/square.png?get-entries-by-name">
+<video src="resources/white.mp4?get-entries-by-name">
+    <track kind=subtitles src="resources/foo.vtt?get-entries-by-name" srclang=en>
+</video>
+<audio src="resources/sound_5.oga?get-entries-by-name"></audio>
+<script>
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", "resources/dummy.xml?get-entries-by-name");
+    xhr.send();
+
+    window.addEventListener("load", t.step_func(function() {
+        setTimeout(t.step_func(function() {
+            verifyGetEntriesByName("resources/dummy.js?get-entries-by-name");
+            verifyGetEntriesByName("resources/dummy.css?get-entries-by-name");
+            verifyGetEntriesByName("resources/square.png?get-entries-by-name");
+            verifyGetEntriesByName("resources/square.png?background&get-entries-by-name");
+            verifyGetEntriesByName("resources/CanvasTest.ttf?get-entries-by-name");
+            verifyGetEntriesByName("resources/foo.vtt?get-entries-by-name");
+            verifyGetEntriesByName("resources/dummy.xml?get-entries-by-name");
+            t.done();
+        }), 0);
+    }));
+</script>
+<span>PASS - this text is here just so that the browser will download the font.</span>
